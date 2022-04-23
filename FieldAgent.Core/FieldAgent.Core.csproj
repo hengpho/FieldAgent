@@ -12,9 +12,4 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTO\" />
-    <Folder Include="Interface\" />
-  </ItemGroup>
-
 </Project>

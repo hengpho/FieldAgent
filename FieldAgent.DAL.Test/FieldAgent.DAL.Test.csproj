@@ -14,4 +14,9 @@
     <PackageReference Include="coverlet.collector" Version="3.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FieldAgent.Core\FieldAgent.Core.csproj" />
+    <ProjectReference Include="..\FieldAgent.DAL\FieldAgent.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
