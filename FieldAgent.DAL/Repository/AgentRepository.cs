@@ -27,27 +27,28 @@ namespace FieldAgent.DAL.Repository
             {
                 using (var db = DbFac.GetDbContext())
                 {
-                    var agent = db.AgencyAgent
-                        .Include(a => a.Agent)
-                            .ThenInclude(m => m.Missions)
-                    .Where(a => a.AgentId == agentId)
-                    .ToList();
-
-                    if (agent != null)
+                    var aliases = db.Alias
+                    .Where(a => a.AgentId == agentId);
+                    foreach (var alias in aliases)
                     {
-                        foreach (var a in agent)
-                        {
-                            db.AgencyAgent.Remove(a);
-                        }
-                        db.SaveChanges();
-                        response.Success = true;
-                        response.Message = "Agent deleted successfully";
+                        db.Alias.Remove(alias);
                     }
-                    else
+                    var agencyAgents = db.AgencyAgent
+                    .Where(aa => aa.AgentId == agentId);
+                    foreach (var agencyAgent in agencyAgents)
                     {
-                        response.Success = false;
-                        response.Message = "Agent not found";
+                        db.AgencyAgent.Remove(agencyAgent);
                     }
+                    var missionAgents = db.MissionAgent
+                    .Where(ma => ma.AgentId == agentId);
+                    foreach (var missionAgent in missionAgents)
+                    {
+                        db.MissionAgent.Remove(missionAgent);
+                    }
+                    db.Agent.Remove(db.Agent.Find(agentId));
+                    db.SaveChanges();
+                    response.Success = true;
+                    response.Message = "Agent deleted successfully";
                 }
             }
             catch (Exception ex)
@@ -81,27 +82,21 @@ namespace FieldAgent.DAL.Repository
         public Response<List<Mission>> GetMissions(int agentId)
         {
             Response<List<Mission>> response = new Response<List<Mission>>();
-            using (var db = DbFac.GetDbContext())
+            try
             {
-                try
+                using (var db = DbFac.GetDbContext())
                 {
-                    foreach (var a in db.Mission
-                        .Include(a => a.Agents)
-                        .Where(a => a.Agents
-                        .Any(m => m.AgentId == agentId))
-                        .ToList())
-                    {
-                        response.Data.Add(a);
-                    }
 
-                    /*var Mission = db.Mission
-                        .Include(m => m.AgencyId)
-                        .Where(m => m.Agents
-                        .Any(a => a.AgentId == agentId))
-                        .ToList();*/
-                    
-                    if (response.Data != null)
+                    var mission = db.Mission
+                        .Include(m => m.MissionAgent)
+                        .ToList();
+
+                    if (mission != null)
                     {
+                        response.Data = mission
+                            .Where(m => m.MissionAgent
+                            .Any(ma => ma.AgentId == agentId))
+                            .ToList();
                         response.Success = true;
                         response.Message = "Missions found";
                     }
@@ -111,14 +106,17 @@ namespace FieldAgent.DAL.Repository
                         response.Message = "Agent not found";
                     }
                 }
-                catch (Exception ex)
-                {
-                    response.Success = false;
-                    response.Message = ex.Message;
-                }
+            }                
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+
             }
-            return response;
+            return response;            
         }
+            
+            
 
         public Response<Agent> Insert(Agent agent)
         {

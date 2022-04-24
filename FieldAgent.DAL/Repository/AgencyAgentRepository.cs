@@ -51,7 +51,23 @@ namespace FieldAgent.DAL.Repository
 
         public Response Delete(int agencyid, int agentid)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+            try
+            {
+                using (var db = DbFac.GetDbContext())
+                {
+                    db.AgencyAgent.Remove(db.AgencyAgent.Find(agencyid, agentid));
+                    db.SaveChanges();
+                    response.Success = true;
+                    response.Message = "Agent deleted successfully";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         public Response<AgencyAgent> Get(int agencyid, int agentid)

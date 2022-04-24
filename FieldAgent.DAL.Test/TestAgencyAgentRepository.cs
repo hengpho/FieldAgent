@@ -17,8 +17,8 @@ namespace FieldAgent.DAL.Test
             AgentId = 2,
             SecurityClearanceId = 4,
             BadgeId = Guid.Parse("dbb14944-ded9-4eae-8f98-a2ad14ee58ed"),
-            ActivationDate = new DateTime(2021 - 6 - 15),
-            DeactivationDate = new DateTime(2019 - 1 - 21),
+            ActivationDate = new DateTime(2021,6,15),
+            DeactivationDate = new DateTime(2019,1,21),
             IsActive = true
         };
         AgencyAgent updateAA = new AgencyAgent
@@ -27,8 +27,8 @@ namespace FieldAgent.DAL.Test
             AgentId = 2,
             SecurityClearanceId = 2,
             BadgeId = Guid.Parse("dbb14944-ded9-4eae-8f98-a2ad14ee58ed"),
-            ActivationDate = new DateTime(2021 - 5 - 15),
-            DeactivationDate = new DateTime(2019 - 2 - 21),
+            ActivationDate = new DateTime(2021,5,15),
+            DeactivationDate = new DateTime(2019,2,21),
             IsActive = false
         };
         AgencyAgent addAA = new AgencyAgent
@@ -37,8 +37,8 @@ namespace FieldAgent.DAL.Test
             AgentId = 2,
             SecurityClearanceId = 1,
             BadgeId = Guid.Parse("dbb14944-ded9-4eae-8f98-a2ad14ee58ed"),
-            ActivationDate = new DateTime(2021 - 1 - 11),
-            DeactivationDate = new DateTime(2019 - 1 - 22),
+            ActivationDate = new DateTime(2021,1,11),
+            DeactivationDate = new DateTime(2019,1,22),
             IsActive = true
         };
         AgencyAgent getAA = new AgencyAgent
@@ -47,8 +47,8 @@ namespace FieldAgent.DAL.Test
             AgentId = 6,
             SecurityClearanceId = 1,
             BadgeId = Guid.Parse("dbb14944-ded9-4eae-8f98-a2ad14ee58ed"),
-            ActivationDate = new DateTime(2021 - 1 - 11),
-            DeactivationDate = new DateTime(2019 - 1 - 22),
+            ActivationDate = new DateTime(2021,1,11),
+            DeactivationDate = new DateTime(2019,1,22),
             IsActive = true
         };
 
@@ -101,17 +101,24 @@ namespace FieldAgent.DAL.Test
         [Test]
         public void TestGetByAgency()
         {
-            var getByAgentId = db.GetByAgent(7);
+            var getByAgentId = db.GetByAgency(7);
             Assert.IsTrue(getByAgentId.Success);
 
 
             foreach (var item in getByAgentId.Data)
             {
-                if (item.AgencyId == 7)
+                if (item.AgentId == 6)
                 {
                     Assert.AreEqual(getAA.AgentId, item.AgentId);
                 }
             }
+        }
+
+        [Test]
+        public void TestDelete()
+        {
+            var delete = db.Delete(4, 2);
+            Assert.IsFalse(db.Get(4, 2).Success);
         }
     }
 }

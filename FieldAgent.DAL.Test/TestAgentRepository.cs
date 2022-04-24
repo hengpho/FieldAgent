@@ -16,7 +16,7 @@ namespace FieldAgent.DAL.Test
             AgentId = 1,
             FirstName = "Vinson",
             LastName = "Leechman",
-            DateOfBirth = new DateTime(2007-3-27),
+            DateOfBirth = new DateTime(2007,3,27),
             Height = 5.85M
         };
         Agent updateAgent = new Agent
@@ -24,14 +24,14 @@ namespace FieldAgent.DAL.Test
             AgentId = 1,
             FirstName = "UpdatedVinson",
             LastName = "UpdatedLeechman",
-            DateOfBirth = new DateTime(2008 - 3 - 27),
+            DateOfBirth = new DateTime(2008,3,27),
             Height = 6.85M
         };
         Agent addAgent = new Agent
         {
             FirstName = "NewVinson",
             LastName = "NewLeechman",
-            DateOfBirth = new DateTime(2009 - 3 - 27),
+            DateOfBirth = new DateTime(2009,3,27),
             Height = 4.85M
         };
         [SetUp]
@@ -53,7 +53,7 @@ namespace FieldAgent.DAL.Test
         public void TestDelete()
         {
             var delete = db.Delete(1);
-            Assert.IsTrue(delete.Success);
+            Assert.IsFalse(db.Get(1).Success);
         }
         [Test]
         public void ShouldNoDelete(){
@@ -63,13 +63,17 @@ namespace FieldAgent.DAL.Test
         [Test]
         public void TestGetMissionAgent(){
 
-            /* int count = agent.Missions.Count();
-             Assert.AreEqual(count, db.GetMissions(1).Data.Count);*/
-
             var missions = db.GetMissions(1);
-            //Assert.True(missions.Success);
-            Assert.AreEqual("", missions.Message);
+            Assert.True(missions.Success);
             Assert.AreEqual(4, missions.Data.Count());
+            
+            foreach (var item in missions.Data)
+            {
+                if (item.CodeName == "Schott's Dalea")
+                {
+                    Assert.AreEqual(10, item.MissionId);
+                }
+            }
         }
 
         [Test]

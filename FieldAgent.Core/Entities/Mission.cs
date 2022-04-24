@@ -11,6 +11,6 @@
         public decimal? OperationalCost { get; set; }
         public int AgencyId { get; set; }
         public Agency Agency { get; set; }
-        public List<Agent> Agents { get; set; }
+        public List<MissionAgent> MissionAgent { get; set; }
     }
 }

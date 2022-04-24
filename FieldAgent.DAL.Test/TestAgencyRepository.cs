@@ -66,5 +66,12 @@ namespace FieldAgent.DAL.Test
         {
             Assert.AreEqual(10, db.GetAll().Data.Count);
         }
+        
+        [Test]
+        public void TestDelete()
+        {
+            var delete = db.Delete(1);
+            Assert.IsFalse(db.Get(1).Success);
+        }        
     }
 }

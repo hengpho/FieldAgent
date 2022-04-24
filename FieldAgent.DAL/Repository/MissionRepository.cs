@@ -22,32 +22,137 @@ namespace FieldAgent.DAL.Repository
 
         public Response<Mission> Insert(Mission mission)
         {
-            throw new NotImplementedException();
+            Response<Mission> response = new Response<Mission>();
+            using (var db = DbFac.GetDbContext())
+            {
+                db.Mission.Add(mission);
+                db.SaveChanges();
+
+                response.Data = mission;
+                response.Success = true;
+                response.Message = "Mission Added";
+            }
+            return response;
         }
 
         public Response Update(Mission mission)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+            using (var db = DbFac.GetDbContext())
+            {
+                db.Mission.Update(mission);
+                db.SaveChanges();
+
+                response.Success = true;
+                response.Message = "Updated Mission";
+            }
+            return response;
         }
 
         public Response Delete(int missionId)
         {
-            throw new NotImplementedException();
+            Response response = new Response();
+            try
+            {
+                using (var db = DbFac.GetDbContext())
+                {
+                    var missionAgents = db.MissionAgent
+                    .Where(ma => ma.MissionId == missionId);
+                    foreach (var missionAgent in missionAgents)
+                    {
+                        db.MissionAgent.Remove(missionAgent);
+                    }
+                    db.Mission.Remove(db.Mission.Find(missionId));
+                    db.SaveChanges();
+                    response.Success = true;
+                    response.Message = "Agent deleted successfully";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
         }
 
         public Response<Mission> Get(int missionId)
         {
-            throw new NotImplementedException();
+            Response<Mission> response = new Response<Mission>();
+            using (var db = DbFac.GetDbContext())
+            {
+                var alias = db.Mission.Find(missionId);
+                if (alias != null)
+                {
+                    response.Data = alias;
+                    response.Success = true;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Missions not found";
+                }
+                return response;
+            }
         }
 
         public Response<List<Mission>> GetByAgency(int agencyId)
         {
-            throw new NotImplementedException();
+            Response<List<Mission>> response = new Response<List<Mission>>();
+            using (var db = DbFac.GetDbContext())
+            {
+                var agency = db.Mission
+                    .Include(a => a.Agency)
+                    .Where(a => a.AgencyId == agencyId)
+                    .ToList();
+
+                if (agency.Count > 0)
+                {
+                    response.Data = agency;
+                    response.Success = true;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Agency not found";
+                }
+                return response;
+            }
         }
 
         public Response<List<Mission>> GetByAgent(int agentId)
         {
-            throw new NotImplementedException();
+            Response<List<Mission>> response = new Response<List<Mission>>();
+            using (var db = DbFac.GetDbContext())
+            {
+                try
+                {
+                    var mission = db.Mission
+                        .Include(m => m.MissionAgent)
+                        .ToList();
+
+                    if (mission != null)
+                    {
+                        response.Data = mission
+                            .Where(m => m.MissionAgent
+                            .Any(ma => ma.AgentId == agentId))
+                            .ToList();
+                        response.Success = true;
+                        response.Message = "Missions found";
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "Agent not found";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    response.Success = false;
+                    response.Message = ex.Message;
+                }
+            }
+            return response;
         }
     }
 }
