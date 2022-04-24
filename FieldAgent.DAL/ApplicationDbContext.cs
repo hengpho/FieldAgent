@@ -1,7 +1,9 @@
 ﻿using FieldAgent.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,8 +18,12 @@ namespace FieldAgent.DAL
         public DbSet<Alias> Alias { get; set; }
         public DbSet<Location> Location { get; set; }
         public DbSet<Mission> Mission { get; set; }
-        public DbSet<SecurityClearance> SecurityClearances { get; set; }
+        public DbSet<SecurityClearance> SecurityClearance { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.LogTo(message => Debug.WriteLine(message), LogLevel.Information);
+        }
         public ApplicationDbContext() : base()
         {
 

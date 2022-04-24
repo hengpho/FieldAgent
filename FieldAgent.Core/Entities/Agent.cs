@@ -15,6 +15,6 @@ namespace FieldAgent.Core.Entities
         public decimal Height { get; set; }
         public List<Alias> Alias { get; set; }
         public List<AgencyAgent> Address { get; set; }
-        public List<Mission> Mission { get; set; }
+        public List<Mission> Missions { get; set; }
     }
 }
