@@ -12,6 +12,7 @@ namespace FieldAgent.DAL.Test
 
         AgencyRepository db;
         DBFactory dbf;
+        MissionRepository missionRepository;
         Agency agency = new Agency
         {
             AgencyId = 1,
@@ -35,7 +36,8 @@ namespace FieldAgent.DAL.Test
         {
             ConfigProvider cp = new ConfigProvider();
             dbf = new DBFactory(cp.Config, FactoryMode.TEST);
-            db = new AgencyRepository(dbf);
+            missionRepository = new MissionRepository(dbf);
+            db = new AgencyRepository(dbf, missionRepository);
             dbf.GetDbContext().Database.ExecuteSqlRaw("SetKnownGoodState");
         }
 
@@ -70,8 +72,8 @@ namespace FieldAgent.DAL.Test
         [Test]
         public void TestDelete()
         {
-            var delete = db.Delete(1);
-            Assert.IsFalse(db.Get(1).Success);
+            var delete = db.Delete(10);
+            Assert.IsFalse(db.Get(10).Success);
         }        
     }
 }

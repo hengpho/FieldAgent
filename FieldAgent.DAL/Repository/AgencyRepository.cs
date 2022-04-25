@@ -14,10 +14,12 @@ namespace FieldAgent.DAL.Repository
     public class AgencyRepository : IAgencyRepository
     {
         public DBFactory DbFac { get; set; }
+        public MissionRepository MissionRepository { get; set; }
 
-        public AgencyRepository(DBFactory dbfac)
+        public AgencyRepository(DBFactory dbfac, MissionRepository missionRepository)
         {
             DbFac = dbfac;
+            MissionRepository = missionRepository;
         }
 
         public Response<Agency> Insert(Agency agency)
@@ -67,11 +69,11 @@ namespace FieldAgent.DAL.Repository
                     {
                         db.AgencyAgent.Remove(agencyAgent);
                     }
-                    var missions = db.Mission
-                    .Where(ma => ma.AgencyId == agencyId);
-                    foreach (var m in missions)
+                    var missions = MissionRepository.GetByAgency(agencyId);
+                    foreach (var m in missions.Data)
                     {
-                        db.Mission.Remove(m);
+                        MissionRepository.Delete(m.MissionId);
+
                     }
                     db.Agency.Remove(db.Agency.Find(agencyId));
                     db.SaveChanges();

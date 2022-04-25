@@ -65,7 +65,7 @@ namespace FieldAgent.DAL.Test
 
             var missions = db.GetMissions(1);
             Assert.True(missions.Success);
-            Assert.AreEqual(4, missions.Data.Count());
+            Assert.AreEqual(6, missions.Data.Count());
             
             foreach (var item in missions.Data)
             {

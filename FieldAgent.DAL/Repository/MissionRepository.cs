@@ -58,14 +58,23 @@ namespace FieldAgent.DAL.Repository
                 {
                     var missionAgents = db.MissionAgent
                     .Where(ma => ma.MissionId == missionId);
-                    foreach (var missionAgent in missionAgents)
+                    if (missionAgents != null)
                     {
-                        db.MissionAgent.Remove(missionAgent);
+                        foreach (var missionAgent in missionAgents)
+                        {
+                            db.MissionAgent.Remove(missionAgent);
+                        }
+                        db.Mission.Remove(db.Mission.Find(missionId));
+                        db.SaveChanges();
+                        response.Success = true;
+                        response.Message = "Agent deleted successfully";
                     }
-                    db.Mission.Remove(db.Mission.Find(missionId));
-                    db.SaveChanges();
-                    response.Success = true;
-                    response.Message = "Agent deleted successfully";
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "No Agent found for this mission";
+                    }
+                    return response;
                 }
             }
             catch (Exception ex)
