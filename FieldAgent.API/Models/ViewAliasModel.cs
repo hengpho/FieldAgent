@@ -7,10 +7,8 @@ namespace FieldAgent.API.Models
         public int AliasId { get; set; }
         
         [Required(ErrorMessage = "Alias is required")]
-        [StringLength(50, ErrorMessage = "Driver name cannot exceed 75 characters")]
+        [StringLength(50, ErrorMessage = "Alias name cannot exceed 50 characters")]
         public string AliasName { get; set; }
-
-        [Required(ErrorMessage = "Interpol ID is required")]
         public Guid? InterpolId { get; set; }
         public string Persona { get; set; }
 

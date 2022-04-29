@@ -1,5 +1,4 @@
 ﻿using FieldAgent.Core.Entities;
-
 namespace FieldAgent.API.Models
 {
     public class AgentModel
@@ -9,6 +8,6 @@ namespace FieldAgent.API.Models
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public decimal Height { get; set; }
-        public List<Mission> Missions { get; set; }
+        public List<Mission>? Missions { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using FieldAgent.Core.Entities;
-
 namespace FieldAgent.API.Models
 {
     public class MissionModel
@@ -12,6 +11,5 @@ namespace FieldAgent.API.Models
         public DateTime? ActualEndDate { get; set; }
         public decimal? OperationalCost { get; set; }
         public int AgencyId { get; set; }
-        public List<Agent> Agent { get; set; }
     }
 }
