@@ -12,17 +12,17 @@ namespace FieldAgent.DAL.Repository
 {
     public class LocationRepository : ILocationRepository
     {
-        public DBFactory DbFac { get; set; }
+        private DbContextOptions Dbco;
 
-        public LocationRepository(DBFactory dbfac)
+        public LocationRepository(FactoryMode mode = FactoryMode.TEST)
         {
-            DbFac = dbfac;
+            Dbco = DBFactory.GetDbContext(mode);
         }
 
         public Response<Location> Insert(Location location)
         {
             Response<Location> response = new Response<Location>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Location.Add(location);
                 db.SaveChanges();
@@ -37,7 +37,7 @@ namespace FieldAgent.DAL.Repository
         public Response Update(Location location)
         {
             Response response = new Response();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Location.Update(location);
                 db.SaveChanges();
@@ -50,7 +50,7 @@ namespace FieldAgent.DAL.Repository
         public Response Delete(int locationId)
         {
             Response response = new Response();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var location = db.Location.Find(locationId);
                 if (location != null)
@@ -73,7 +73,7 @@ namespace FieldAgent.DAL.Repository
         public Response<Location> Get(int locationId)
         {
             Response<Location> response = new Response<Location>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var location = db.Location.Find(locationId);
                 if (location != null)
@@ -93,7 +93,7 @@ namespace FieldAgent.DAL.Repository
         public Response<List<Location>> GetByAgency(int agencyId)
         {
             Response<List<Location>> response = new Response<List<Location>>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var location = db.Location
                     .Include(a => a.Agency)

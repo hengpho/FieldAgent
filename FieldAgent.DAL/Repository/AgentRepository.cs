@@ -13,11 +13,11 @@ namespace FieldAgent.DAL.Repository
 {
     public class AgentRepository : IAgentRepository
     {
-        public DBFactory DbFac { get; set; }
+        private DbContextOptions Dbco;
 
-        public AgentRepository(DBFactory dbfac)
+        public AgentRepository(FactoryMode mode = FactoryMode.TEST)
         {
-            DbFac = dbfac;
+            Dbco = DBFactory.GetDbContext(mode);
         }
 
         public Response Delete(int agentId)
@@ -25,7 +25,7 @@ namespace FieldAgent.DAL.Repository
             Response response = new Response();
             try
             {
-                using (var db = DbFac.GetDbContext())
+                using (var db = new ApplicationDbContext(Dbco))
                 {
                     var aliases = db.Alias
                     .Where(a => a.AgentId == agentId);
@@ -62,7 +62,7 @@ namespace FieldAgent.DAL.Repository
         public Response<Agent> Get(int agentId)
         {
             Response<Agent> response = new Response<Agent>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var agent = db.Agent.Find(agentId);
                 if (agent != null)
@@ -84,7 +84,7 @@ namespace FieldAgent.DAL.Repository
             Response<List<Mission>> response = new Response<List<Mission>>();
             try
             {
-                using (var db = DbFac.GetDbContext())
+                using (var db = new ApplicationDbContext(Dbco))
                 {
 
                     var mission = db.Mission
@@ -121,7 +121,7 @@ namespace FieldAgent.DAL.Repository
         public Response<Agent> Insert(Agent agent)
         {
             Response<Agent> response = new Response<Agent>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Agent.Add(agent);
                 db.SaveChanges();
@@ -136,7 +136,7 @@ namespace FieldAgent.DAL.Repository
         public Response Update(Agent agent)
         {
             Response response = new Response();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Agent.Update(agent);
                 db.SaveChanges();

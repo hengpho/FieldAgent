@@ -13,19 +13,20 @@ namespace FieldAgent.DAL.Repository
 {
     public class AgencyRepository : IAgencyRepository
     {
-        public DBFactory DbFac { get; set; }
         public MissionRepository MissionRepository { get; set; }
 
-        public AgencyRepository(DBFactory dbfac, MissionRepository missionRepository)
+        private DbContextOptions Dbco;
+
+        public AgencyRepository(MissionRepository missionRepository, FactoryMode mode = FactoryMode.TEST)
         {
-            DbFac = dbfac;
+            Dbco = DBFactory.GetDbContext(mode);
             MissionRepository = missionRepository;
         }
 
         public Response<Agency> Insert(Agency agency)
         {
             Response<Agency> response = new Response<Agency>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Agency.Add(agency);
                 db.SaveChanges();
@@ -40,7 +41,7 @@ namespace FieldAgent.DAL.Repository
         public Response Update(Agency agency)
         {
             Response response = new Response();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Agency.Update(agency);
                 db.SaveChanges();
@@ -55,7 +56,7 @@ namespace FieldAgent.DAL.Repository
             Response response = new Response();
             try
             {
-                using (var db = DbFac.GetDbContext())
+                using (var db = new ApplicationDbContext(Dbco))
                 {
                     var locations = db.Location
                     .Where(a => a.AgencyId == agencyId);
@@ -92,7 +93,7 @@ namespace FieldAgent.DAL.Repository
         public Response<Agency> Get(int agencyId)
         {
             Response<Agency> response = new Response<Agency>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var agency = db.Agency.Find(agencyId);
                 if (agency != null)
@@ -113,7 +114,7 @@ namespace FieldAgent.DAL.Repository
         {
             Response<List<Agency>> response = new Response<List<Agency>>();
 
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var agency = db.Agency.ToList();
                 if (agency.Count > 0)

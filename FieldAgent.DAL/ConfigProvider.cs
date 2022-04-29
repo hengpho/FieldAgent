@@ -14,11 +14,8 @@ namespace FieldAgent.DAL
         public ConfigProvider()
         {
             var builder = new ConfigurationBuilder();
-
             builder.AddUserSecrets<ConfigProvider>();
             Config = builder.Build();
         }
     }
 }
-//DB factory
-//unique key, handled with a Key decorator maybe

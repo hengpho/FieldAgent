@@ -12,17 +12,17 @@ namespace FieldAgent.DAL.Repository
 {
     public class SecurityClearanceRepository : ISecurityClearanceRepository
     {
-        public DBFactory DbFac { get; set; }
+        private DbContextOptions Dbco;
 
-        public SecurityClearanceRepository(DBFactory dbfac)
+        public SecurityClearanceRepository(FactoryMode mode = FactoryMode.TEST)
         {
-            DbFac = dbfac;
+            Dbco = DBFactory.GetDbContext(mode);
         }
 
         public Response<SecurityClearance> Get(int securityClearanceId)
         {
             Response<SecurityClearance> response = new Response<SecurityClearance>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var securityClearance = db.SecurityClearance.Find(securityClearanceId);
                 if (securityClearance != null)
@@ -43,7 +43,7 @@ namespace FieldAgent.DAL.Repository
         {
             Response<List<SecurityClearance>> response = new Response<List<SecurityClearance>>();
 
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var securityClearances = db.SecurityClearance.ToList();
                 if (securityClearances.Count > 0)

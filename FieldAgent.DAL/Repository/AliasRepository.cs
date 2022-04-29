@@ -12,17 +12,16 @@ namespace FieldAgent.DAL.Repository
 {
     public class AliasRepository : IAliasRepository
     {
-        public DBFactory DbFac { get; set; }
-
-        public AliasRepository(DBFactory dbfac)
+        private DbContextOptions Dbco;
+        public AliasRepository(FactoryMode mode = FactoryMode.TEST)
         {
-            DbFac = dbfac;
+            Dbco = DBFactory.GetDbContext(mode);
         }
 
         public Response<Alias> Insert(Alias alias)
         {
             Response<Alias> response = new Response<Alias>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Alias.Add(alias);
                 db.SaveChanges();
@@ -37,7 +36,7 @@ namespace FieldAgent.DAL.Repository
         public Response Update(Alias alias)
         {
             Response response = new Response();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Alias.Update(alias);
                 db.SaveChanges();
@@ -50,7 +49,7 @@ namespace FieldAgent.DAL.Repository
         public Response Delete(int aliasId)
         {
             Response response = new Response();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var alias = db.Alias.Find(aliasId);
                 if(alias != null)
@@ -73,7 +72,7 @@ namespace FieldAgent.DAL.Repository
         public Response<Alias> Get(int aliasId)
         {
             Response<Alias> response = new Response<Alias>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var alias = db.Alias.Find(aliasId);
                 if (alias != null)
@@ -93,7 +92,7 @@ namespace FieldAgent.DAL.Repository
         public Response<List<Alias>> GetByAgent(int agentId)
         {
             Response<List<Alias>> response = new Response<List<Alias>>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var alias = db.Alias
                     .Include(a => a.Agent)

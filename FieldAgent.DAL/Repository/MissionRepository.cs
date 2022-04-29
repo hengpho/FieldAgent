@@ -13,17 +13,17 @@ namespace FieldAgent.DAL.Repository
 {
     public class MissionRepository : IMissionRepository
     {
-        public DBFactory DbFac { get; set; }
+        private DbContextOptions Dbco;
 
-        public MissionRepository(DBFactory dbfac)
+        public MissionRepository(FactoryMode mode = FactoryMode.TEST)
         {
-            DbFac = dbfac;
+            Dbco = DBFactory.GetDbContext(mode);
         }
 
         public Response<Mission> Insert(Mission mission)
         {
             Response<Mission> response = new Response<Mission>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Mission.Add(mission);
                 db.SaveChanges();
@@ -38,7 +38,7 @@ namespace FieldAgent.DAL.Repository
         public Response Update(Mission mission)
         {
             Response response = new Response();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 db.Mission.Update(mission);
                 db.SaveChanges();
@@ -54,7 +54,7 @@ namespace FieldAgent.DAL.Repository
             Response response = new Response();
             try
             {
-                using (var db = DbFac.GetDbContext())
+                using (var db = new ApplicationDbContext(Dbco))
                 {
                     var missionAgents = db.MissionAgent
                     .Where(ma => ma.MissionId == missionId);
@@ -88,7 +88,7 @@ namespace FieldAgent.DAL.Repository
         public Response<Mission> Get(int missionId)
         {
             Response<Mission> response = new Response<Mission>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var alias = db.Mission.Find(missionId);
                 if (alias != null)
@@ -108,7 +108,7 @@ namespace FieldAgent.DAL.Repository
         public Response<List<Mission>> GetByAgency(int agencyId)
         {
             Response<List<Mission>> response = new Response<List<Mission>>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 var agency = db.Mission
                     .Include(a => a.Agency)
@@ -132,7 +132,7 @@ namespace FieldAgent.DAL.Repository
         public Response<List<Mission>> GetByAgent(int agentId)
         {
             Response<List<Mission>> response = new Response<List<Mission>>();
-            using (var db = DbFac.GetDbContext())
+            using (var db = new ApplicationDbContext(Dbco))
             {
                 try
                 {

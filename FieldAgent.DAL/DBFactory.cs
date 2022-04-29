@@ -15,23 +15,18 @@ namespace FieldAgent.DAL
     }
     public class DBFactory
     {
-        private readonly IConfigurationRoot Config;
-        private readonly FactoryMode Mode;
-
-        public DBFactory(IConfigurationRoot config, FactoryMode mode = FactoryMode.PROD)
+        public static DbContextOptions GetDbContext(FactoryMode mode)
         {
-            Config = config;
-            Mode = mode;
-        }
+            string environment = mode == FactoryMode.TEST ? "Test" : "Prod";
 
-        public ApplicationDbContext GetDbContext()
-        {
-            string environment = Mode == FactoryMode.TEST ? "Test" : "Prod";
+            var builder = new ConfigurationBuilder();
+            builder.AddUserSecrets<ConfigProvider>();
+            var config = builder.Build();
 
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlServer(Config[$"ConnectionStrings:{environment}"])
+                .UseSqlServer(config[$"ConnectionStrings:{environment}"])
                 .Options;
-            return new ApplicationDbContext(options);
+            return options;
         }
     }
 }
