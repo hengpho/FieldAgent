@@ -135,15 +135,18 @@ namespace FieldAgent.API.Controllers
             }
         }
 
-        [HttpDelete, Authorize]
+        [HttpDelete("{aliasId}"), Authorize]
         public IActionResult DeleteAlias(int aliasId)
         {
             var findResult = _aliasRepository.Get(aliasId);
+
             if (!findResult.Success)
-            {
+            {            
                 return NotFound(findResult.Message);
-            }
-            var result = _aliasRepository.Delete(aliasId);
+            }            
+
+            var result = _aliasRepository.Delete(findResult.Data.AliasId);
+            
             if (!result.Success)
             {
                 return BadRequest(result.Message);
