@@ -72,7 +72,6 @@ namespace FieldAgent.API.Controllers
             {
                 Alias Alias = new Alias
                 {
-                    AliasId = viewAlisModel.AliasId,
                     AliasName = viewAlisModel.AliasName,
                     InterpolId = viewAlisModel.InterpolId,
                     Persona = viewAlisModel.Persona,

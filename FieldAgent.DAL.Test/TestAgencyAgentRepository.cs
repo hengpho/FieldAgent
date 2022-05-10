@@ -55,10 +55,9 @@ namespace FieldAgent.DAL.Test
         [SetUp]
         public void Setup()
         {
-            ConfigProvider cp = new ConfigProvider();
-            dbf = new DBFactory(cp.Config, FactoryMode.TEST);
-            db = new AgencyAgentRepository(dbf);
-            dbf.GetDbContext().Database.ExecuteSqlRaw("SetKnownGoodState");
+            AgencyAgentRepository setup = new AgencyAgentRepository(FactoryMode.TEST);
+            setup.SetKnownGoodState();
+            db = setup;
         }
 
         [Test]

@@ -10,7 +10,6 @@ namespace FieldAgent.DAL.Test
     public class TestReportsRepository
     {
         ReportsRepository db;
-        DBFactory dbf;
         DateTime dateOfBirth = new DateTime(2006, 8, 3);
         DateTime DeactivationDate = new DateTime(2021, 1, 21);
         
@@ -21,9 +20,7 @@ namespace FieldAgent.DAL.Test
         public void Setup()
         {
             ConfigProvider cp = new ConfigProvider();
-            dbf = new DBFactory(cp.Config, FactoryMode.TEST);
             db = new ReportsRepository(cp.Config);
-            dbf.GetDbContext().Database.ExecuteSqlRaw("SetKnownGoodState");
         }
 
         [Test]

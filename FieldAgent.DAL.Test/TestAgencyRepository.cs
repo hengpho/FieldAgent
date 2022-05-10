@@ -11,7 +11,6 @@ namespace FieldAgent.DAL.Test
     {
 
         AgencyRepository db;
-        DBFactory dbf;
         MissionRepository missionRepository;
         Agency agency = new Agency
         {
@@ -34,11 +33,10 @@ namespace FieldAgent.DAL.Test
         [SetUp]
         public void Setup()
         {
-            ConfigProvider cp = new ConfigProvider();
-            dbf = new DBFactory(cp.Config, FactoryMode.TEST);
-            missionRepository = new MissionRepository(dbf);
-            db = new AgencyRepository(dbf, missionRepository);
-            dbf.GetDbContext().Database.ExecuteSqlRaw("SetKnownGoodState");
+            missionRepository = new MissionRepository(FactoryMode.TEST);
+            AgencyRepository setup = new AgencyRepository(missionRepository, FactoryMode.TEST);
+            setup.SetKnownGoodState();
+            db = setup;
         }
 
         [Test]

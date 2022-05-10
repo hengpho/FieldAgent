@@ -113,5 +113,12 @@ namespace FieldAgent.DAL.Repository
                 return response;
             }
         }
+        public void SetKnownGoodState()
+        {
+            using (var db = new ApplicationDbContext(Dbco))
+            {
+                db.Database.ExecuteSqlRaw("SetKnownGoodState");
+            }
+        }
     }
 }

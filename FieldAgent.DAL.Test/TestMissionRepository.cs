@@ -10,7 +10,6 @@ namespace FieldAgent.DAL.Test
     public class TestMissionRepository
     {
         MissionRepository db;
-        DBFactory dbf;
         Mission mission = new Mission
         {
             MissionId = 1,
@@ -47,10 +46,9 @@ namespace FieldAgent.DAL.Test
         [SetUp]
         public void Setup()
         {
-            ConfigProvider cp = new ConfigProvider();
-            dbf = new DBFactory(cp.Config, FactoryMode.TEST);
-            db = new MissionRepository(dbf);
-            dbf.GetDbContext().Database.ExecuteSqlRaw("SetKnownGoodState");
+            MissionRepository setup = new MissionRepository(FactoryMode.TEST);
+            setup.SetKnownGoodState();
+            db = setup;
         }
 
         [Test]
